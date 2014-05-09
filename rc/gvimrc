@@ -1,0 +1,25 @@
+set guioptions-=T
+set guioptions-=m
+set guioptions+=b
+set nowrap
+set mousemodel=extend
+set columns=120
+set lines=40
+
+colorscheme wombat
+
+try
+  set guifont=ゆたぽん（コーディング）Backsl:h12
+catch /.*/
+  " do nothing
+endtry
+
+autocmd guienter * set transparency=221
+
+augroup CursorHook
+  autocmd!
+  autocmd WinLeave * set nocursorline
+  autocmd WinLeave * set nocursorcolumn
+  autocmd WinEnter,BufRead * set cursorline
+  autocmd WinEnter,BufRead * set cursorcolumn
+augroup END

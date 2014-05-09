@@ -1,0 +1,37 @@
+set nocompatible               " be iMproved
+set noswapfile
+set nobackup
+set noundofile
+set number                   " 行番号を表示
+set clipboard=unnamed        " yとかpとかdでクリップボードを使ってくれる
+set list                     " 下のlcsに必須
+set lcs=tab:^\               " タブ文字を分かりやすく表示(\の後に空白文字が必要)
+set display=uhex             " 表示できない文字を16進表示
+set ignorecase               " 下のsmartcaseに必須
+set smartcase                " 基本大文字と小文字を無視して検索し、大文字が含まれる場合は無視せずに検索する
+set incsearch                " インクリメンタルに検索する
+set wrapscan                 " ドキュメントの下まで行ったら一番最初に戻って検索
+set hlsearch                 " マッチした語をハイライト表示する
+
+"============================================================
+" Unite
+"============================================================
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+  call neobundle#rc(expand('~/.vim/bundle/'))
+endif
+" originalrepos on github
+NeoBundle 'Shougo/neobundle.vim'
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'VimClojure'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'jpalardy/vim-slime'
+NeoBundle 'scrooloose/syntastic'
+""NeoBundle 'https://bitbucket.org/kovisoft/slimv'
+
+filetype plugin indent on     " required!
+filetype indent on
+syntax on
