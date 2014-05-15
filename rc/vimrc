@@ -13,6 +13,55 @@ set incsearch                " インクリメンタルに検索する
 set wrapscan                 " ドキュメントの下まで行ったら一番最初に戻って検索
 set hlsearch                 " マッチした語をハイライト表示する
 
+" tab character
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+
+" encoding
+"set encoding=utf-8
+set fenc=utf-8
+
+" move
+for key in ['j', 'k', 'gg', 'G', '{', '}', '[', ']', '[(', '])',
+            \ '[{', ']}', ']m', ']M', '[m', '[M', '[#', ']#', '[*', ']*', '[/', ']/',
+            \ '%', 'H', 'L', 'w', 'W', 'e', 'ge', 'b', 'B', '<C-d>', '<C-u>', '<C-f>', '<C-b>']
+    execute 'nnoremap ' . key . ' ' . key . 'zz'
+endfor
+
+"================================================================================
+" vimrc & gvimrc {{{
+"================================================================================
+
+function! SourceIfExists(file)
+    if filereadable(expand(a:file))
+        execute 'source ' . a:file
+    endif
+    echo 'Reloaded vimrc and gvimrc.'
+endfunction
+
+let vimrcbody = '$HOME/_vimrc'
+let gvimrcbody = '$HOME/_gvimrc'
+function! OpenFile(file)
+    let empty_buffer = line('$') == 1 && strlen(getline('1')) == 0
+    if empty_buffer && !&modified
+        execute 'e ' . a:file
+    else
+        execute 'tabnew ' . a:file
+    endif
+endfunction
+
+command! OpenMyVimrc call OpenFile(vimrcbody)
+command! OpenMyGVimrc call OpenFile(gvimrcbody)" open vimrc/gvimrc
+" reload vimrc and gvimrc
+nnoremap <F5> <Esc>:<C-u>source $MYVIMRC<CR>
+            \ :source $MYGVIMRC<CR>
+            \ :call SourceIfExists('~/vimfiles/ftplugin/' . &filetype . '.vim')<CR>
+" open vimrc/gvimrc
+nnoremap <Space><Space> :<C-u>OpenMyVimrc<CR>
+nnoremap <Space><Tab> :<C-u>OpenMyGVimrc<CR>
+
 "============================================================
 " Unite
 "============================================================
