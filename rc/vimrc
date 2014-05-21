@@ -84,6 +84,9 @@ NeoBundle "Shougo/neosnippet-snippets"
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'scrooloose/syntastic'
 
+" for read cgi
+NeoBundle 'koron/chalice'
+
 " for git
 NeoBundle 'motemen/git-vim'
 
