@@ -13,6 +13,9 @@ set incsearch                " インクリメンタルに検索する
 set wrapscan                 " ドキュメントの下まで行ったら一番最初に戻って検索
 set hlsearch                 " マッチした語をハイライト表示する
 
+" stataus line
+set statusline=%<%f\ %m%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%(Base64:%{Dec64()}\ %)%([%{GitBranch()}]%)%l,%c%8P
+
 " tab character
 set tabstop=4
 set softtabstop=4
@@ -81,6 +84,9 @@ NeoBundle "Shougo/neosnippet-snippets"
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'scrooloose/syntastic'
 
+" for git
+NeoBundle 'motemen/git-vim'
+
 " for Haskell
 NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'eagletmt/ghcmod-vim'
@@ -105,3 +111,80 @@ let g:haddock_browser = "C:/Program Files (x86)/Google/Chrome/Application/chrome
 filetype plugin indent on     " required!
 filetype indent on
 syntax on
+
+"================================================================================
+" Base64 {{{
+"================================================================================
+function! D2B(i)
+    let l:work = []
+    let l:num = a:i
+    while l:num != 0
+        call insert(l:work, l:num % 2)
+        let l:num = l:num / 2
+    endwhile
+
+    let l:result = '000000'
+    for i in l:work
+        let l:result .= i
+    endfor
+    return strpart(l:result, len(l:result) - 6)
+endfunction
+let s:AsciiChars =
+            \ "??????????\n\t?\r??" .
+            \ '????????????????' .
+            \ ' !"#$%&''()*+,-./' .
+            \ '0123456789:;<=>?' .
+            \ '@ABCDEFGHIJKLMNO' .
+            \ 'PQRSTUVWXYZ[\]^_' .
+            \ '`abcdefghijklmno' .
+            \ 'pqrstuvwxyz{|}~?'
+function! Bin2Ch(bin)
+    let l:ascii = 0
+    let l:ascii += a:bin[0] == '1' ? 128 : 0
+    let l:ascii += a:bin[1] == '1' ? 64 : 0
+    let l:ascii += a:bin[2] == '1' ? 32 : 0
+    let l:ascii += a:bin[3] == '1' ? 16 : 0
+    let l:ascii += a:bin[4] == '1' ? 8 : 0
+    let l:ascii += a:bin[5] == '1' ? 4 : 0
+    let l:ascii += a:bin[6] == '1' ? 2 : 0
+    let l:ascii += a:bin[7] == '1' ? 1 : 0
+    return s:AsciiChars[l:ascii]
+endfunction
+let s:Base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+function! Dec64()
+    let l:row = line(".")
+    let l:col = col(".")
+    let l:line = getline(l:row)
+    let l:from = l:col
+    while l:from != 0
+        let l:ch = l:line[l:from]
+        if l:ch != '=' && stridx(s:Base64Chars, l:ch) == -1
+            let l:from += 1
+            break
+        endif
+        let l:from -= 1
+    endwhile
+    let l:to = l:from + 1
+    while l:to < len(l:line)
+        let l:ch = l:line[l:to]
+        if stridx(s:Base64Chars, l:ch) == -1
+            break
+        endif
+        let l:to += 1
+    endwhile
+    let l:target = strpart(l:line, l:from, l:to - l:from)
+    let l:bin = ''
+    for i in range(0, len(l:target) - 1)
+        let l:ch = l:target[i]
+        let l:idx = stridx(s:Base64Chars, l:ch)
+        let l:bin .= D2B(l:idx)
+    endfor
+    let l:result = ''
+    while l:bin != '' && len(l:bin) >= 8
+        let l:t = strpart(l:bin, 0, 8)
+        let l:bin = strpart(l:bin, 8)
+        let l:result .= Bin2Ch(l:t)
+    endwhile
+    return l:result
+endfunction
+" }}}
