@@ -84,6 +84,12 @@ NeoBundle "Shougo/neosnippet-snippets"
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'scrooloose/syntastic'
 
+" for xml
+NeoBundle 'xmledit'
+
+" html5の追加タグ
+NeoBundle 'three/html5.vim'
+
 " for read cgi
 NeoBundle 'koron/chalice'
 
