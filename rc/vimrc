@@ -115,7 +115,7 @@ NeoBundle 'lukerandall/haskellmode-vim'
 
 NeoBundle 'thinca/vim-qfreplace'
 " use ghc functionality for haskell files
-au Bufenter *.hs compiler ghc
+au BufEnter *.hs compiler ghc
 
 " switch on syntax highlighting
 syntax on
@@ -125,6 +125,7 @@ filetype plugin on
 
 " configure browser for haskell_doc.vim
 let g:haddock_browser = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
+let g:ghc="C:\Program Files\Haskell Platform\2014.2.0.0\bin"
 
 filetype plugin indent on     " required!
 filetype indent on
