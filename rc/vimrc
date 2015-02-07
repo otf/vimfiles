@@ -12,9 +12,9 @@ set smartcase                " 基本大文字と小文字を無視して検索�
 set incsearch                " インクリメンタルに検索する
 set wrapscan                 " ドキュメントの下まで行ったら一番最初に戻って検索
 set hlsearch                 " マッチした語をハイライト表示する
-
+set tw=0
 " stataus line
-set statusline=%<%f\ %m%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%(Base64:%{Dec64()}\ %)%([%{GitBranch()}]%)%l,%c%8P
+set statusline=%<%f\ %m%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%([%{GitBranch()}]%)%l,%c%8P
 
 " tab character
 set tabstop=4
@@ -24,6 +24,7 @@ set expandtab
 
 " encoding
 "set encoding=utf-8
+set enc=utf-8
 set fenc=utf-8
 
 " move
@@ -86,7 +87,11 @@ NeoBundle 'Shougo/neosnippet'
 NeoBundle "Shougo/neosnippet-snippets"
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'scrooloose/syntastic'
-
+NeoBundle 'rbtnn/winime.vim', {
+    \  'build' : {
+    \     'windows' : 'make -f make_mingw32.mak',
+    \   }
+    \ }
 " for xml
 NeoBundle 'xmledit'
 
@@ -108,6 +113,7 @@ NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'lukerandall/haskellmode-vim'
 ""NeoBundle 'https://bitbucket.org/kovisoft/slimv'
 
+NeoBundle 'thinca/vim-qfreplace'
 " use ghc functionality for haskell files
 au Bufenter *.hs compiler ghc
 
@@ -124,79 +130,44 @@ filetype plugin indent on     " required!
 filetype indent on
 syntax on
 
-"================================================================================
-" Base64 {{{
-"================================================================================
-function! D2B(i)
-    let l:work = []
-    let l:num = a:i
-    while l:num != 0
-        call insert(l:work, l:num % 2)
-        let l:num = l:num / 2
-    endwhile
+" command-line window
+nnoremap q: q:<Esc>
+function! Enable_cmdwin_keymap()
+    nnoremap <sid>(command-line-enter) q:
+    xnoremap <sid>(command-line-enter) q:
+    nnoremap <sid>(command-line-norange) q:<C-u>
 
-    let l:result = '000000'
-    for i in l:work
-        let l:result .= i
-    endfor
-    return strpart(l:result, len(l:result) - 6)
+    nmap :  <sid>(command-line-enter)
+    xmap :  <sid>(command-line-enter)
 endfunction
-let s:AsciiChars =
-            \ "??????????\n\t?\r??" .
-            \ '????????????????' .
-            \ ' !"#$%&''()*+,-./' .
-            \ '0123456789:;<=>?' .
-            \ '@ABCDEFGHIJKLMNO' .
-            \ 'PQRSTUVWXYZ[\]^_' .
-            \ '`abcdefghijklmno' .
-            \ 'pqrstuvwxyz{|}~?'
-function! Bin2Ch(bin)
-    let l:ascii = 0
-    let l:ascii += a:bin[0] == '1' ? 128 : 0
-    let l:ascii += a:bin[1] == '1' ? 64 : 0
-    let l:ascii += a:bin[2] == '1' ? 32 : 0
-    let l:ascii += a:bin[3] == '1' ? 16 : 0
-    let l:ascii += a:bin[4] == '1' ? 8 : 0
-    let l:ascii += a:bin[5] == '1' ? 4 : 0
-    let l:ascii += a:bin[6] == '1' ? 2 : 0
-    let l:ascii += a:bin[7] == '1' ? 1 : 0
-    return s:AsciiChars[l:ascii]
+
+function! Disable_cmdwin_keymap()
+    nunmap <sid>(command-line-enter)
+    xunmap <sid>(command-line-enter)
+    nunmap <sid>(command-line-norange)
+    nunmap :
+    xunmap :
 endfunction
-let s:Base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-function! Dec64()
-    let l:row = line(".")
-    let l:col = col(".")
-    let l:line = getline(l:row)
-    let l:from = l:col
-    while l:from != 0
-        let l:ch = l:line[l:from]
-        if l:ch != '=' && stridx(s:Base64Chars, l:ch) == -1
-            let l:from += 1
-            break
-        endif
-        let l:from -= 1
-    endwhile
-    let l:to = l:from + 1
-    while l:to < len(l:line)
-        let l:ch = l:line[l:to]
-        if stridx(s:Base64Chars, l:ch) == -1
-            break
-        endif
-        let l:to += 1
-    endwhile
-    let l:target = strpart(l:line, l:from, l:to - l:from)
-    let l:bin = ''
-    for i in range(0, len(l:target) - 1)
-        let l:ch = l:target[i]
-        let l:idx = stridx(s:Base64Chars, l:ch)
-        let l:bin .= D2B(l:idx)
-    endfor
-    let l:result = ''
-    while l:bin != '' && len(l:bin) >= 8
-        let l:t = strpart(l:bin, 0, 8)
-        let l:bin = strpart(l:bin, 8)
-        let l:result .= Bin2Ch(l:t)
-    endwhile
-    return l:result
+
+call Enable_cmdwin_keymap()
+
+augroup MyAutoCmd
+    autocmd!
+    autocmd CmdwinEnter * call s:init_cmdwin()
+augroup END
+
+function! s:init_cmdwin()
+    nnoremap <buffer> q :<C-u>quit<CR>
+    nnoremap <buffer> <Tab> :<C-u>quit<CR>
+    inoremap <buffer><expr><CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
+    inoremap <buffer><expr><C-h> pumvisible() ? "\<C-y>\<C-h>" : "\<C-h>"
+    inoremap <buffer><expr><BS> pumvisible() ? "\<C-y>\<C-h>" : "\<C-h>"
+
+    " Completion.
+    inoremap <buffer><expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+
+    nnoremap <buffer> <Esc><Esc> :<C-u>q<CR>
+    inoremap <buffer> <Esc><Esc> <Esc>:q<CR>
+
+    startinsert!
 endfunction
-" }}}
