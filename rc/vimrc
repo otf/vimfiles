@@ -184,3 +184,9 @@ function! HandleURI()
 endfunction
 
 map <Leader>w :call HandleURI()<CR>
+
+function! EvalFs()
+  exec "'<,'>!eval-fs"
+endfunction
+
+map <Leader>f :call EvalFs()<CR>
