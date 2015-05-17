@@ -6,7 +6,7 @@ set mousemodel=extend
 set columns=120
 set lines=40
 
-colorscheme wombat
+colorscheme hybrid
 
 try
   set guifont=Inconsolata:h12
