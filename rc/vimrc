@@ -104,6 +104,10 @@ NeoBundle 'tyru/open-browser.vim'
 au BufRead,BufNewFile *.md set filetype=markdown
 let g:previm_open_cmd = 'chrome'
 
+" for asciidoc
+NeoBundle 'vim-scripts/asciidoc.vim'
+au BufRead,BufNewFile *.adoc set filetype=asciidoc
+
 " html5の追加タグ
 NeoBundle 'three/html5.vim'
 
