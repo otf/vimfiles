@@ -34,6 +34,12 @@ for key in ['j', 'k', 'gg', 'G', '{', '}', '[', ']', '[(', '])',
     execute 'nnoremap ' . key . ' ' . key . 'zz'
 endfor
 
+" window manage                                                                                                                                                                        
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l   
+
 " for todo 
 command! Todo call OpenFile('~/Dropbox/private/todo.md')
 
