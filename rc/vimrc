@@ -40,6 +40,8 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l   
 
+let mapleader = "\<Space>"
+
 " for todo 
 command! Todo call OpenFile('~/Dropbox/private/todo.md')
 
@@ -72,8 +74,8 @@ nnoremap <F5> <Esc>:<C-u>source $MYVIMRC<CR>
             \ :source $MYGVIMRC<CR>
             \ :call SourceIfExists('~/vimfiles/ftplugin/' . &filetype . '.vim')<CR>
 " open vimrc/gvimrc
-nnoremap <Space><Space> :<C-u>OpenMyVimrc<CR>
-nnoremap <Space><Tab> :<C-u>OpenMyGVimrc<CR>
+" nnoremap <Space><Space> :<C-u>OpenMyVimrc<CR>
+nnoremap <Space><Tab> :<C-u>OpenMyVimrc<CR>
 
 "============================================================
 " Unite
@@ -108,7 +110,7 @@ NeoBundle 'kannokanno/previm'
 NeoBundle 'tyru/open-browser.vim'
 
 au BufRead,BufNewFile *.md set filetype=markdown
-let g:previm_open_cmd = 'chrome'
+let g:previm_open_cmd = 'browse'
 
 " for asciidoc
 NeoBundle 'vim-scripts/asciidoc.vim'
@@ -116,6 +118,7 @@ au BufRead,BufNewFile *.adoc set filetype=asciidoc
 
 " html5の追加タグ
 NeoBundle 'three/html5.vim'
+NeoBundle 'mattn/emmet-vim'
 
 " for read cgi
 NeoBundle 'koron/chalice'
@@ -133,6 +136,9 @@ NeoBundle 'lukerandall/haskellmode-vim'
 ""NeoBundle 'https://bitbucket.org/kovisoft/slimv'
 
 NeoBundle 'thinca/vim-qfreplace'
+
+NeoBundle 'Lokaltog/vim-easymotion'
+
 " use ghc functionality for haskell files
 au BufEnter *.hs compiler ghc
 
@@ -202,10 +208,20 @@ function! HandleURI()
   endif
 endfunction
 
+
 map <Leader>w :call HandleURI()<CR>
 
 function! EvalFs()
   exec "'<,'>!eval-fs"
 endfunction
 
-map <Leader>f :call EvalFs()<CR>
+map <Leader>r :call EvalFs()<CR>
+
+map f <Plug>(easymotion-fl)
+map t <Plug>(easymotion-tl)
+map F <Plug>(easymotion-Fl)
+map T <Plug>(easymotion-Tl)
+nmap s <Plug>(easymotion-s2)
+
+
+
