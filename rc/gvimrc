@@ -9,7 +9,7 @@ set lines=40
 colorscheme hybrid
 
 try
-  set guifont=Inconsolata:h12
+  set guifont=Inconsolata:h15
 catch /.*/
   " do nothing
 endtry

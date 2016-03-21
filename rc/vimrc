@@ -1,54 +1,41 @@
-set nocompatible               " be iMproved
+" basic configuration {{{1
+filetype on
+filetype plugin indent on
+syntax on
+set nocompatible             " be iMproved
 set noswapfile
 set nobackup
 set noundofile
-set number                   " 行番号を表示
-set clipboard=unnamed        " yとかpとかdでクリップボードを使ってくれる
-set list                     " 下のlcsに必須
-set lcs=tab:^\               " タブ文字を分かりやすく表示(\の後に空白文字が必要)
-set display=uhex             " 表示できない文字を16進表示
-set ignorecase               " 下のsmartcaseに必須
-set smartcase                " 基本大文字と小文字を無視して検索し、大文字が含まれる場合は無視せずに検索する
-set incsearch                " インクリメンタルに検索する
-set wrapscan                 " ドキュメントの下まで行ったら一番最初に戻って検索
-set hlsearch                 " マッチした語をハイライト表示する
+set number                   
+set clipboard=unnamed        
+set list                     
+set lcs=tab:^\               
+set display=uhex
+set ignorecase
+set smartcase
+set incsearch
+set wrapscan
+set hlsearch
 set tw=0
-" stataus line
 set statusline=%<%f\ %m%r%h%w%y%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%([%{GitBranch()}]%)%l,%c%8P
-
-" tab character
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-
-" encoding
-"set encoding=utf-8
 set enc=utf-8
 set fenc=utf-8
 
-" move
+" key mapping {{{1
 for key in ['j', 'k', 'gg', 'G', '{', '}', '[', ']', '[(', '])',
             \ '[{', ']}', ']m', ']M', '[m', '[M', '[#', ']#', '[*', ']*', '[/', ']/',
             \ '%', 'H', 'L', 'w', 'W', 'e', 'ge', 'b', 'B', '<C-d>', '<C-u>', '<C-f>', '<C-b>']
     execute 'nnoremap ' . key . ' ' . key . 'zz'
 endfor
 
-" window manage                                                                                                                                                                        
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-h> <c-w>h
-nnoremap <c-l> <c-w>l   
-
 let mapleader = "\<Space>"
 
-" for todo 
-command! Todo call OpenFile('~/Dropbox/private/todo.md')
 
-"================================================================================
-" vimrc & gvimrc {{{
-"================================================================================
-
+" for open vimrc & gvimrc {{{1
 function! SourceIfExists(file)
     if filereadable(expand(a:file))
         execute 'source ' . a:file
@@ -69,94 +56,15 @@ endfunction
 
 command! OpenMyVimrc call OpenFile(vimrcbody)
 command! OpenMyGVimrc call OpenFile(gvimrcbody)" open vimrc/gvimrc
-" reload vimrc and gvimrc
+
+" for reload vimrc and gvimrc {{{1
 nnoremap <F5> <Esc>:<C-u>source $MYVIMRC<CR>
             \ :source $MYGVIMRC<CR>
             \ :call SourceIfExists('~/vimfiles/ftplugin/' . &filetype . '.vim')<CR>
-" open vimrc/gvimrc
-" nnoremap <Space><Space> :<C-u>OpenMyVimrc<CR>
-nnoremap <Space><Tab> :<C-u>OpenMyVimrc<CR>
+nnoremap <Space><Space> :<C-u>OpenMyVimrc<CR>
+nnoremap <Space><Tab> :<C-u>OpenMyGVimrc<CR>
 
-"============================================================
-" Unite
-"============================================================
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim
-  call neobundle#rc(expand('~/.vim/bundle/'))
-endif
-" originalrepos on github
-NeoBundle 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/vimproc'
-NeoBundle 'VimClojure'
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neosnippet'
-NeoBundle "Shougo/neosnippet-snippets"
-NeoBundle 'jpalardy/vim-slime'
-NeoBundle 'scrooloose/syntastic'
-NeoBundle 'rbtnn/winime.vim', {
-    \  'build' : {
-    \     'windows' : 'make -f make_mingw32.mak',
-    \   }
-    \ }
-" for xml
-NeoBundle 'xmledit'
-
-" for markdown
-NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'plasticboy/vim-markdown'
-NeoBundle 'kannokanno/previm'
-NeoBundle 'tyru/open-browser.vim'
-
-au BufRead,BufNewFile *.md set filetype=markdown
-let g:previm_open_cmd = 'browse'
-
-" for asciidoc
-NeoBundle 'vim-scripts/asciidoc.vim'
-au BufRead,BufNewFile *.adoc set filetype=asciidoc
-
-" html5の追加タグ
-NeoBundle 'three/html5.vim'
-NeoBundle 'mattn/emmet-vim'
-
-" for read cgi
-NeoBundle 'koron/chalice'
-
-" for git
-NeoBundle 'motemen/git-vim'
-
-" for Haskell
-NeoBundle 'kana/vim-filetype-haskell'
-NeoBundle 'eagletmt/ghcmod-vim'
-NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'ujihisa/ref-hoogle'
-NeoBundle 'lukerandall/haskellmode-vim'
-""NeoBundle 'https://bitbucket.org/kovisoft/slimv'
-
-NeoBundle 'thinca/vim-qfreplace'
-
-NeoBundle 'Lokaltog/vim-easymotion'
-
-" use ghc functionality for haskell files
-au BufEnter *.hs compiler ghc
-
-" switch on syntax highlighting
-syntax on
-
-" enable filetype detection, plus loading of filetype plugins
-filetype plugin on
-
-" configure browser for haskell_doc.vim
-let g:haddock_browser = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
-let g:ghc="C:\Program Files\Haskell Platform\2014.2.0.0\bin"
-
-filetype plugin indent on     " required!
-filetype indent on
-syntax on
-
-" command-line window
+" for command-line window{{{1
 nnoremap q: q:<Esc>
 function! Enable_cmdwin_keymap()
     nnoremap <sid>(command-line-enter) q:
@@ -198,6 +106,7 @@ function! s:init_cmdwin()
     startinsert!
 endfunction
 
+" for open URL {{{1
 function! HandleURI()
   let s:uri = matchstr(getline("."), '[a-z]*:\/\/[^ >,;:]*')
   echo s:uri
@@ -215,13 +124,48 @@ function! EvalFs()
   exec "'<,'>!eval-fs"
 endfunction
 
+" for cal fs{{{1
 map <Leader>r :call EvalFs()<CR>
 
-map f <Plug>(easymotion-fl)
-map t <Plug>(easymotion-tl)
-map F <Plug>(easymotion-Fl)
-map T <Plug>(easymotion-Tl)
-nmap s <Plug>(easymotion-s2)
+" neobundle {{{1
+set runtimepath^=~/.vim/bundle/neobundle.vim/
+call neobundle#begin(expand('~/.vim/bundle/'))
 
+NeoBundle 'mattn/webapi-vim'
+NeoBundle 'mattn/excelview-vim'
+NeoBundle 'Shougo/neobundle.vim'
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'VimClojure'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle "Shougo/neosnippet-snippets"
+NeoBundle 'jpalardy/vim-slime'
+NeoBundle 'scrooloose/syntastic'
+"NeoBundle 'rbtnn/winime.vim'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'simeji/winresizer'
+NeoBundle 'xmledit'
+NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 'plasticboy/vim-markdown'
+NeoBundle 'vim-scripts/vim-auto-save'
+NeoBundle 'kannokanno/previm'
+NeoBundle 'kana/vim-submode'
+NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'vim-scripts/asciidoc.vim'
+NeoBundle 'mattn/emmet-vim'
+NeoBundle 'motemen/git-vim'
+NeoBundle 'thinca/vim-qfreplace'
+NeoBundleFetch 'Shougo/neobundle.vim'
 
+call neobundle#end()
 
+" variables{{{
+let g:vimfiler_as_default_explorer = 1
+let g:previm_open_cmd = 'browse'
+let g:vimfiler_edit_action = 'tabopen'
+
+" vim: foldmethod=marker
+" vim: foldcolumn=3
+" vim: foldlevel=0
